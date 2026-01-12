@@ -225,6 +225,11 @@ WatchFaceInfineat::WatchFaceInfineat(Controllers::DateTime& dateTimeController,
   lv_obj_align(labelDate, dateContainer, LV_ALIGN_IN_TOP_MID, 0, 0);
   lv_label_set_text_static(labelDate, "Mon 01");
 
+  labelBattery = lv_label_create(lv_scr_act(), nullptr);
+  lv_obj_set_style_local_text_color(labelBattery, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, grayColor);
+  lv_obj_align(labelBattery, lv_scr_act(), LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
+  lv_label_set_text_static(labelBattery, "0%");
+
   bleIcon = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_set_style_local_text_color(bleIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, grayColor);
   lv_label_set_text_static(bleIcon, Symbols::bluetooth);
@@ -434,18 +439,9 @@ void WatchFaceInfineat::Refresh() {
 
   batteryPercentRemaining = batteryController.PercentRemaining();
   isCharging = batteryController.IsCharging();
-  // Charging battery animation
-  if (batteryController.IsCharging() && (xTaskGetTickCount() - chargingAnimationTick > pdMS_TO_TICKS(150))) {
-    // Dividing 100 by the height gives the battery percentage required to shift the animation by 1 pixel
-    chargingBatteryPercent += 100 / lv_obj_get_height(logoPine);
-    if (chargingBatteryPercent > 100) {
-      chargingBatteryPercent = batteryPercentRemaining.Get();
-    }
-    SetBatteryLevel(chargingBatteryPercent);
-    chargingAnimationTick = xTaskGetTickCount();
-  } else if (isCharging.IsUpdated() || batteryPercentRemaining.IsUpdated()) {
-    chargingBatteryPercent = batteryPercentRemaining.Get();
-    SetBatteryLevel(chargingBatteryPercent);
+  
+  if (isCharging.IsUpdated() || batteryPercentRemaining.IsUpdated()) {
+    lv_label_set_text_fmt(labelBattery, "%d%%", batteryPercentRemaining.Get());
   }
 
   bleState = bleController.IsConnected();

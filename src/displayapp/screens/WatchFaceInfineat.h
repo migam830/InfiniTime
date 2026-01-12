@@ -82,6 +82,8 @@ namespace Pinetime {
         lv_obj_t* btnSettings;
         lv_obj_t* labelBtnSettings;
         lv_obj_t* lblToggle;
+	
+	lv_obj_t* labelBattery;
 
         lv_obj_t* lines[nLines];
 
