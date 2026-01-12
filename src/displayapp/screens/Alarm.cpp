@@ -156,6 +156,7 @@ void Alarm::OnButtonEvent(lv_obj_t* obj, lv_event_t event) {
     if (obj == enableSwitch) {
       if (lv_switch_get_state(enableSwitch)) {
         alarmController.ScheduleAlarm();
+	ShowInfo();
       } else {
         alarmController.DisableAlarm();
       }
